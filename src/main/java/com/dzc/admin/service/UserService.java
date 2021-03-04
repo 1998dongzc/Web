@@ -12,6 +12,6 @@ import org.springframework.stereotype.Service;
  */
 public interface UserService {
 
-    public Result getOneUser(User user);
+    public Result isUser(User user);
 
 }

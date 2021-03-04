@@ -3,6 +3,10 @@ server:
     context-path: /admin
   port: 8080
 
+mybatis:
+  mapper-locations: classpath:com/dzc/admin/mapper/**/*.xml
+  type-aliases-package: com.dzc.admin.model
+
 # 应用名称
 spring:
   # 数据库驱动：
@@ -29,4 +33,12 @@ logging:
         admin:
           mapper: debug
 
-
+#热部署
+  devtools:
+    restart:
+      #热部署生效
+      enabled: true
+        #设置重启的目录
+#        additional-paths: src/main/java
+      #classpath目录下的WEB-INF文件夹内容修改不重启
+      exclude: WEB-INF/**
