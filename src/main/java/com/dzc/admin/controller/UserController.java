@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author: 董政辰
  * @date: 2021/3/3 17:18
- * @description:
+ * @description: 用户账号相关controller
  * @email：532587041@qq.com
  */
 @RestController
@@ -23,8 +23,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @ValidToken
-    @PostMapping("/singin")
+    @PostMapping("/signin")
     public Result userLogin(User user) {
         Result oneUser = userService.isUser(user);
         return oneUser;

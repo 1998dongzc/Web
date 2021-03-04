@@ -46,21 +46,21 @@ public class JwtUtil {
     /**
      * 校验token是否合法
      */
-    public static void verifyToken(String token) {
-
+    public static boolean verifyToken(String token) {
         try {
-            DecodedJWT verify = JWT.require(Algorithm.HMAC256(SECRET)).build().verify(token);
+            JWT.require(Algorithm.HMAC256(SECRET)).build().verify(token);
         } catch (JWTVerificationException e) {
             System.out.println("登陆过期");
-            e.printStackTrace();
+            return false;
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
-
+        return true;
     }
 
     /**
      * 对token的解密
+     *
      * @Param: 传入token
      */
     public static DecodedJWT getTokenInfo(String token) {

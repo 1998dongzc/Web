@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 /**
  * @author: 董政辰
  * @date: 2021/3/3 17:25
- * @description:
+ * @description: 后端传给前端的消息体
  * @email：532587041@qq.com
  */
 
@@ -22,7 +22,7 @@ public class Result {
      * 成功:200
      * 错误依据情况而定
      */
-    private int code;
+    private int status;
 
     /**
      * 请求返回的通知消息内容
