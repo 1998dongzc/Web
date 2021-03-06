@@ -360,6 +360,13 @@ export const asyncRoutes = [
   },
 
   {
+    name: 'test',
+    meta: { title: 'Test', icon: 'theme' },
+    path: '/test',
+    component: Layout
+  },
+
+  {
     path: '/clipboard',
     component: Layout,
     children: [
