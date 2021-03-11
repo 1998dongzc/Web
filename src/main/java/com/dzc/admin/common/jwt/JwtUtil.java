@@ -2,14 +2,20 @@ package com.dzc.admin.common.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.dzc.admin.common.ErrorCode;
 import com.dzc.admin.common.Result;
+import com.dzc.admin.model.User;
+import jdk.nashorn.internal.ir.ReturnNode;
+import org.springframework.data.relational.core.sql.In;
 import sun.misc.Cleaner;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -25,19 +31,26 @@ public class JwtUtil {
      */
     private static String SECRET = "admin^&^";
 
+    //过期时间 单位：分
+    private static final int EXPIRE_TIME = 20;
+
+
     /**
      * 生成token
      */
-    public static String createToken(Map<String, String> map) {
+    public static String createToken(User user) {
         JWTCreator.Builder builder = JWT.create();
+        Map<String, Object> map = new HashMap();
+        map.put("uid", user.getId());
+        map.put("username", user.getUsername());
+        map.put("password", user.getPassword());
 
         map.forEach((k, v) -> {
-            builder.withClaim(k, v);
+            builder.withClaim(k, v.toString());
         });
 
-        // 设置过期时间 10S
         Calendar instance = Calendar.getInstance();
-        instance.add(Calendar.DAY_OF_MONTH, 30);
+        instance.add(Calendar.MINUTE, EXPIRE_TIME);
         builder.withExpiresAt(instance.getTime());
 
         return builder.sign(Algorithm.HMAC256(SECRET));
@@ -50,7 +63,6 @@ public class JwtUtil {
         try {
             JWT.require(Algorithm.HMAC256(SECRET)).build().verify(token);
         } catch (JWTVerificationException e) {
-            System.out.println("登陆过期");
             return false;
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -59,11 +71,20 @@ public class JwtUtil {
     }
 
     /**
-     * 对token的解密
+     * 对token的解密 获取用户ID
      *
      * @Param: 传入token
      */
-    public static DecodedJWT getTokenInfo(String token) {
-        return JWT.require(Algorithm.HMAC256(SECRET)).build().verify(token);
+    public static Integer getTokenInfo(String token) {
+        try {
+        Algorithm algorithm = Algorithm.HMAC256(SECRET);
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT jwt = verifier.verify(token);
+        String res = jwt.getClaim("uid").asString();
+        return Integer.valueOf(res);
+        } catch (Exception exception) {
+            return 0;
+        }
     }
+
 }

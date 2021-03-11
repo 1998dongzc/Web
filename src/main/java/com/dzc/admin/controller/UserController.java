@@ -2,13 +2,12 @@ package com.dzc.admin.controller;
 
 import com.dzc.admin.annotation.ValidToken;
 import com.dzc.admin.common.Result;
-import com.dzc.admin.common.jwt.JwtUtil;
 import com.dzc.admin.model.User;
 import com.dzc.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author: 董政辰
@@ -23,15 +22,46 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/signin")
-    public Result userLogin(User user) {
-        Result oneUser = userService.isUser(user);
-        return oneUser;
+    /**
+     * 用户登录APi
+     *
+     * @param user
+     * @return token 用户token
+     */
+    @PostMapping("/login")
+    public Result userLogin(@RequestBody User user) {
+        return userService.logIn(user);
+    }
+
+    /**
+     * 获取用户信息api
+     *
+     * @return
+     */
+    @GetMapping("/info")
+    @ValidToken
+    public Result userInfo(HttpServletRequest request) {
+        return userService.getUserInfo(request);
+    }
+
+    /**
+     * 登出api
+     *
+     * @return
+     */
+    @ValidToken
+    @PostMapping("/logout")
+    public Result userLogout() {
+        return userService.logOut();
     }
 
     @PostMapping("/signup")
-    public Result signUp(User user){
+    public Result signUp(User user) {
         return null;
     }
 
+    @GetMapping("/getInfo/{id}")
+    public Result getUserName(@PathVariable("id") Integer id){
+        return userService.getUserInfoById(id);
+    }
 }

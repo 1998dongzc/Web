@@ -49,7 +49,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
             res = JwtUtil.verifyToken(token);
         }
         if (!res) {
-            response.sendError(ErrorCode.TOKEN_ERROR, "用户登陆信息已过期");
+            response.sendError(ErrorCode.TOKEN_EXPIRED, "用户登陆信息已过期");
         }
         return res;
     }

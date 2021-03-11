@@ -8,6 +8,8 @@ package com.dzc.admin.common;
  */
 public class ErrorCode {
 
-    public static final int TOKEN_ERROR = 401;
+    public static final int TOKEN_EXPIRED = 401;
+    public static final int TOKEN_ERROR = 402;
+
 
 }
