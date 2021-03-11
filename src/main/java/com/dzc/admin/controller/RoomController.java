@@ -5,6 +5,7 @@ import com.dzc.admin.dao.BuildingMapper;
 import com.dzc.admin.dao.RoomMapper;
 import com.dzc.admin.model.Building;
 import com.dzc.admin.model.Room;
+import com.dzc.admin.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * @email：532587041@qq.com
  */
 @RestController
+@RequestMapping("build")
 public class RoomController {
 
     @Autowired
@@ -24,6 +26,9 @@ public class RoomController {
 
     @Autowired
     private BuildingMapper buildingMapper;
+
+    @Autowired
+    private RoomService roomService;
 
     @GetMapping("/getRoom")
     public Result getRoom(){
@@ -49,4 +54,23 @@ public class RoomController {
         return Result.success(building);
     }
 
+    @PostMapping("/addBuild")
+    public Result addBuild(@RequestBody Building building){
+        return roomService.addBuild(building);
+    }
+
+    @PostMapping("/delBuild")
+    public Result delBuild(@RequestBody Building building){
+        return roomService.delBuild(building);
+    }
+
+    @PostMapping("/addRoom")
+    public Result addRoom(@RequestBody Room room){
+        return roomService.addRoom(room);
+    }
+
+    @PostMapping("/delRoom")
+    public Result delRoom(@RequestBody Room room){
+        return roomService.delRoom(room);
+    }
 }

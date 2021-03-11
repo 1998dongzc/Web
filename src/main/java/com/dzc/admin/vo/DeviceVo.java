@@ -21,4 +21,5 @@ public class DeviceVo {
     private String BuildingName;
     private String roomName;
     private Integer status;
+    private String ip;
 }

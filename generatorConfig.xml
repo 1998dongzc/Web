@@ -29,7 +29,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table schema="mybatis" tableName="t_apply" domainObjectName="Apply"
+        <table schema="mybatis" tableName="t_apply_log" domainObjectName="ApplyLog"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">

@@ -2,6 +2,7 @@ package com.dzc.admin.service;
 
 import com.dzc.admin.common.Result;
 import com.dzc.admin.model.User;
+import com.dzc.admin.model.UserInfo;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,4 +22,10 @@ public interface UserService {
     public Result logOut();
 
     Result getUserInfoById(Integer id);
+
+    Result getUser(User user);
+
+    Result updateUser(User user);
+
+    Result updateUserInfo(UserInfo userInfo);
 }

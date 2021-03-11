@@ -6,9 +6,10 @@
         <result column="device_name" jdbcType="VARCHAR" property="deviceName"/>
         <result column="device_room_id" jdbcType="INTEGER" property="deviceRoomId"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="ip" jdbcType="VARCHAR" property="ip"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, device_name, device_room_id, status
+    id, device_name, device_room_id, status,ip
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -86,9 +87,10 @@ SELECT
 	r.device_name as DeviceName,
 	r.room_name as BuildingName,
 	b.building_name as roomName,
-	r.STATUS as status
+	r.STATUS as status,
+	r.ip as ip
 FROM
-	( SELECT d.id, device_name, room_name,STATUS, buidling_id FROM `t_device` d JOIN t_room r ON d.device_room_id = r.id ) AS r
+	( SELECT d.id , d.ip as ip, device_name, room_name,STATUS, buidling_id FROM `t_device` d JOIN t_room r ON d.device_room_id = r.id ) AS r
 	JOIN t_building b ON r.buidling_id = b.id
   </select>
 </mapper>

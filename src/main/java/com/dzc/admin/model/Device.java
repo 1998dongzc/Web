@@ -9,6 +9,16 @@ public class Device {
 
     private Integer status;
 
+    private String ip;
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -48,6 +58,7 @@ public class Device {
                 ", deviceName='" + deviceName + '\'' +
                 ", deviceRoomId=" + deviceRoomId +
                 ", status=" + status +
+                ", Ip=" + ip +
                 '}';
     }
 }

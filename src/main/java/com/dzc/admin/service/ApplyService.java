@@ -16,5 +16,11 @@ public interface ApplyService {
 
     Result getAllApplys();
 
-    Result agree(Device device,Integer num,Integer uid);
+    Result agree(Device device,Integer num,Integer uid,Integer applyId);
+
+    Result getApplyLog(Integer uid);
+
+    Result delAllLogs(Integer uid);
+
+    Result disagree(Device device, Integer num, Integer uid, Integer applyId);
 }

@@ -11,6 +11,7 @@ import com.dzc.admin.service.UserService;
 import com.dzc.admin.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,6 +75,37 @@ public class UserServiceImpl implements UserService {
             return Result.fail("获取用户信息失败");
         }
         return Result.success(userInfo);
+    }
+
+    @Override
+    public Result getUser(User user) {
+        User res = userMapper.selectByPrimaryKey(user.getId());
+        if (res!=null){
+            res.setPassword("");
+            return Result.success(res);
+        }else {
+            return Result.fail("获取用户信息失败");
+        }
+    }
+
+    @Override
+    @Transactional
+    public Result updateUser(User user) {
+        int res=userMapper.updateByPrimaryKeySelective(user);
+        if (res!=1)
+            return Result.fail("修改密码失败");
+        else
+            return Result.success("修改密码成功");
+    }
+
+    @Override
+    @Transactional
+    public Result updateUserInfo(UserInfo userInfo) {
+        int res = userInfoMapper.updateByPrimaryKeySelective(userInfo);
+        if (res!=1)
+            return Result.fail("修改个人信息失败");
+        else
+            return Result.success("修改个人信息成功");
     }
 
 }

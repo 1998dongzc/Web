@@ -3,6 +3,7 @@ package com.dzc.admin.controller;
 import com.dzc.admin.annotation.ValidToken;
 import com.dzc.admin.common.Result;
 import com.dzc.admin.model.User;
+import com.dzc.admin.model.UserInfo;
 import com.dzc.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,24 +45,23 @@ public class UserController {
         return userService.getUserInfo(request);
     }
 
-    /**
-     * 登出api
-     *
-     * @return
-     */
-    @ValidToken
-    @PostMapping("/logout")
-    public Result userLogout() {
-        return userService.logOut();
+    @PostMapping("/get")
+    public Result getUser(@RequestBody User user){
+        return userService.getUser(user);
     }
 
-    @PostMapping("/signup")
-    public Result signUp(User user) {
-        return null;
+    @PostMapping("/updateUser")
+    public Result updateUser(@RequestBody User user){
+        return userService.updateUser(user);
     }
 
     @GetMapping("/getInfo/{id}")
     public Result getUserName(@PathVariable("id") Integer id){
         return userService.getUserInfoById(id);
+    }
+
+    @PostMapping("/updateInfo")
+    public Result updateInfo(@RequestBody UserInfo userInfo){
+        return userService.updateUserInfo(userInfo);
     }
 }

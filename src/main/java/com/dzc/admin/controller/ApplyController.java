@@ -3,7 +3,9 @@ package com.dzc.admin.controller;
 import com.dzc.admin.common.Result;
 import com.dzc.admin.model.Apply;
 import com.dzc.admin.model.Device;
+import com.dzc.admin.model.UserInfo;
 import com.dzc.admin.service.ApplyService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,21 +20,36 @@ import org.springframework.web.bind.annotation.*;
 public class ApplyController {
 
     @Autowired
-    private ApplyService applyDevice;
+    private ApplyService applyService;
 
     @PostMapping("/add")
     public Result apply(@RequestBody Apply apply){
-        return applyDevice.addApply(apply);
+        return applyService.addApply(apply);
     }
 
     @GetMapping("/get")
     public Result getApplys(){
-        return applyDevice.getAllApplys();
+        return applyService.getAllApplys();
+    }
+    
+    @GetMapping("/log/{uid}")
+    public Result applyLog(@PathVariable("uid") Integer uid){
+        return applyService.getApplyLog(uid);
     }
 
-    @PostMapping("/agree/{num}/{uid}")
-    public Result agreeApply(@RequestBody Device device, @PathVariable("num") Integer num,@PathVariable("uid") Integer uid){
-        return applyDevice.agree(device,num,uid);
+    @PostMapping("/delLogs")
+    public Result delAllLogs(@RequestBody UserInfo user){
+        return applyService.delAllLogs(user.getId());
+    }
+
+    @PostMapping("/agree/{num}/{uid}/{aid}")
+    public Result agreeApply(@RequestBody Device device, @PathVariable("num") Integer num,@PathVariable("uid") Integer uid,@PathVariable("aid") Integer applyId){
+        return applyService.agree(device,num,uid,applyId);
+    }
+
+    @PostMapping("/disagree/{num}/{uid}/{aid}")
+    public Result rejectApply(@RequestBody Device device, @PathVariable("num") Integer num,@PathVariable("uid") Integer uid,@PathVariable("aid") Integer applyId){
+        return applyService.disagree(device,num,uid,applyId);
     }
 
 }
