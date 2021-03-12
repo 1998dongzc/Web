@@ -1,6 +1,8 @@
 package com.dzc.admin.controller;
 
+import com.dzc.admin.annotation.ValidToken;
 import com.dzc.admin.common.Result;
+import com.dzc.admin.common.jwt.JwtUtil;
 import com.dzc.admin.model.Apply;
 import com.dzc.admin.model.Device;
 import com.dzc.admin.model.UserInfo;
@@ -8,6 +10,8 @@ import com.dzc.admin.service.ApplyService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author: 董政辰
@@ -22,6 +26,7 @@ public class ApplyController {
     @Autowired
     private ApplyService applyService;
 
+    @ValidToken
     @PostMapping("/add")
     public Result apply(@RequestBody Apply apply){
         return applyService.addApply(apply);
@@ -37,16 +42,19 @@ public class ApplyController {
         return applyService.getApplyLog(uid);
     }
 
+    @ValidToken
     @PostMapping("/delLogs")
     public Result delAllLogs(@RequestBody UserInfo user){
         return applyService.delAllLogs(user.getId());
     }
 
+    @ValidToken
     @PostMapping("/agree/{num}/{uid}/{aid}")
     public Result agreeApply(@RequestBody Device device, @PathVariable("num") Integer num,@PathVariable("uid") Integer uid,@PathVariable("aid") Integer applyId){
         return applyService.agree(device,num,uid,applyId);
     }
 
+    @ValidToken
     @PostMapping("/disagree/{num}/{uid}/{aid}")
     public Result rejectApply(@RequestBody Device device, @PathVariable("num") Integer num,@PathVariable("uid") Integer uid,@PathVariable("aid") Integer applyId){
         return applyService.disagree(device,num,uid,applyId);

@@ -46,6 +46,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public Result addRoom(Room room) {
         int res = roomMapper.insertSelective(room);
         if (res!=1)
@@ -55,6 +56,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public Result delRoom(Room room) {
         int res = roomMapper.deleteByPrimaryKey(room.getId());
         if (res!=1)

@@ -2,21 +2,21 @@ package com.dzc.admin.service.impl;
 
 import com.dzc.admin.common.ErrorCode;
 import com.dzc.admin.common.Result;
+import com.dzc.admin.common.constant.Info;
 import com.dzc.admin.common.jwt.JwtUtil;
 import com.dzc.admin.dao.UserInfoMapper;
 import com.dzc.admin.dao.UserMapper;
 import com.dzc.admin.model.User;
 import com.dzc.admin.model.UserInfo;
 import com.dzc.admin.service.UserService;
+import com.dzc.admin.vo.UserInfoVo;
 import com.dzc.admin.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author: 董政辰
@@ -51,8 +51,6 @@ public class UserServiceImpl implements UserService {
     public Result getUserInfo(HttpServletRequest request) {
         String token = request.getHeader("user-token");
         int uid = JwtUtil.getTokenInfo(token);
-        System.out.println(token);
-        System.out.println(uid);
         if (uid == 0)
             return Result.fail(ErrorCode.TOKEN_EXPIRED, "用户登录已过期");
         UserInfo userInfo = userInfoMapper.selectByPrimaryKey(uid);
@@ -63,7 +61,7 @@ public class UserServiceImpl implements UserService {
     public Result logOut() {
         try {
             return Result.success("登出成功");
-        }catch (Exception exception){
+        } catch (Exception exception) {
             return Result.fail("登出失败");
         }
     }
@@ -71,7 +69,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result getUserInfoById(Integer id) {
         UserInfo userInfo = userInfoMapper.selectByPrimaryKey(id);
-        if (userInfo==null){
+        if (userInfo == null) {
             return Result.fail("获取用户信息失败");
         }
         return Result.success(userInfo);
@@ -80,10 +78,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result getUser(User user) {
         User res = userMapper.selectByPrimaryKey(user.getId());
-        if (res!=null){
+        if (res != null) {
             res.setPassword("");
             return Result.success(res);
-        }else {
+        } else {
             return Result.fail("获取用户信息失败");
         }
     }
@@ -91,8 +89,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Result updateUser(User user) {
-        int res=userMapper.updateByPrimaryKeySelective(user);
-        if (res!=1)
+        int res = userMapper.updateByPrimaryKeySelective(user);
+        if (res != 1)
             return Result.fail("修改密码失败");
         else
             return Result.success("修改密码成功");
@@ -102,10 +100,72 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Result updateUserInfo(UserInfo userInfo) {
         int res = userInfoMapper.updateByPrimaryKeySelective(userInfo);
-        if (res!=1)
+        if (res != 1)
             return Result.fail("修改个人信息失败");
         else
             return Result.success("修改个人信息成功");
+    }
+
+    @Override
+    public Result getAllUserInfo() {
+        List<UserInfoVo> allUser = userMapper.getAllUser();
+        if (allUser.isEmpty())
+            return Result.fail("获取所有用户信息失败");
+        else
+            return Result.success(allUser);
+    }
+
+    @Override
+    @Transactional
+    public Result changeRole(UserInfo userInfo) {
+        int res = userInfoMapper.updateByPrimaryKeySelective(userInfo);
+        if (res != 1)
+            return Result.fail("修改用户权限失败");
+        else
+            return Result.success("修改用户权限成功");
+    }
+
+    @Override
+    @Transactional
+    public Result signUpOneUser(UserInfoVo userInfoVo) {
+
+        Integer incrementId = userMapper.getIncrementId();
+
+        User addUser = new User();
+        addUser.setUsername(userInfoVo.getUsername());
+        User user = userMapper.selectUserByUserName(addUser);
+        if (user != null) {
+            return Result.fail("该账号已存在");
+        }
+
+        addUser.setPassword(userInfoVo.getPasword());
+        addUser.setId(incrementId);
+
+        UserInfo addInfo = new UserInfo();
+        addInfo.setId(incrementId);
+        addInfo.setAvatar(Info.DEFAULTAVATAR);
+        addInfo.setRole(Info.DEFAULTROLE);
+        addInfo.setName(userInfoVo.getName());
+        addInfo.setIntroduction("");
+        int addUserRes = userMapper.insertSelective(addUser);
+        int addInfoRes = userInfoMapper.insertSelective(addInfo);
+
+        if (addUserRes==1&&addInfoRes==1){
+            return Result.success("注册成功");
+        }
+        else{
+            return Result.fail("注册失败,请重新尝试");
+        }
+    }
+
+    @Override
+    @Transactional
+    public Result delUser(User user) {
+        int res = userMapper.deleteByPrimaryKey(user.getId());
+        if (res != 1)
+            return Result.fail("删除用户失败");
+        else
+            return Result.success("删除用户成功");
     }
 
 }

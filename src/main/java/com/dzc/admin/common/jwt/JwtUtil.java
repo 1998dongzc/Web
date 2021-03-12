@@ -31,8 +31,8 @@ public class JwtUtil {
      */
     private static String SECRET = "admin^&^";
 
-    //过期时间 单位：分
-    private static final int EXPIRE_TIME = 20;
+    //过期时间 单位：秒
+    private static final int EXPIRE_TIME = 10*60;
 
 
     /**
@@ -50,7 +50,7 @@ public class JwtUtil {
         });
 
         Calendar instance = Calendar.getInstance();
-        instance.add(Calendar.MINUTE, EXPIRE_TIME);
+        instance.add(Calendar.SECOND, EXPIRE_TIME);
         builder.withExpiresAt(instance.getTime());
 
         return builder.sign(Algorithm.HMAC256(SECRET));

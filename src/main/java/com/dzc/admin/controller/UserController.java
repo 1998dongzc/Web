@@ -5,6 +5,7 @@ import com.dzc.admin.common.Result;
 import com.dzc.admin.model.User;
 import com.dzc.admin.model.UserInfo;
 import com.dzc.admin.service.UserService;
+import com.dzc.admin.vo.UserInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,11 +46,13 @@ public class UserController {
         return userService.getUserInfo(request);
     }
 
+    @ValidToken
     @PostMapping("/get")
     public Result getUser(@RequestBody User user){
         return userService.getUser(user);
     }
 
+    @ValidToken
     @PostMapping("/updateUser")
     public Result updateUser(@RequestBody User user){
         return userService.updateUser(user);
@@ -60,8 +63,32 @@ public class UserController {
         return userService.getUserInfoById(id);
     }
 
+    @ValidToken
     @PostMapping("/updateInfo")
     public Result updateInfo(@RequestBody UserInfo userInfo){
         return userService.updateUserInfo(userInfo);
+    }
+
+    @ValidToken
+    @GetMapping("/getAllUser")
+    public Result getAllUser(){
+        return userService.getAllUserInfo();
+    }
+
+    @ValidToken
+    @PostMapping("/changeRole")
+    public Result changUserRole(@RequestBody UserInfo userInfo){
+        return userService.changeRole(userInfo);
+    }
+
+    @PostMapping("/signUp")
+    public Result signUp(@RequestBody UserInfoVo userInfoVo){
+        return userService.signUpOneUser(userInfoVo);
+    }
+
+    @ValidToken
+    @PostMapping("/delUser")
+    public Result delUser(@RequestBody User user){
+        return userService.delUser(user);
     }
 }

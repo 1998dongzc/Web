@@ -77,4 +77,23 @@
         and
         password=#{password,jdbcType=VARCHAR}
     </select>
+    <select id="getAllUser" resultType="com.dzc.admin.vo.UserInfoVo">
+        select u.id as id,username,name,role
+        from
+        t_user u
+        join
+        t_user_info i
+        on
+        u.id=i.id
+    </select>
+    <select id="selectUserByUserName" resultMap="BaseResultMap" parameterType="com.dzc.admin.model.User">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        t_user
+        where username = #{username,jdbcType=VARCHAR}
+    </select>
+    <select id="getIncrementId" resultType="java.lang.Integer">
+        SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name="t_user"
+    </select>
 </mapper>

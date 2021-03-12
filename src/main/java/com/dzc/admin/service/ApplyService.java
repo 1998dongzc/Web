@@ -12,7 +12,7 @@ import com.dzc.admin.model.Device;
  */
 public interface ApplyService {
 
-    public Result addApply(Apply apply);
+    Result addApply(Apply apply);
 
     Result getAllApplys();
 

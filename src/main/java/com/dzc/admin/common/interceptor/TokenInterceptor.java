@@ -1,7 +1,9 @@
 package com.dzc.admin.common.interceptor;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dzc.admin.annotation.ValidToken;
 import com.dzc.admin.common.ErrorCode;
+import com.dzc.admin.common.Result;
 import com.dzc.admin.common.jwt.JwtUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -11,6 +13,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * @author: 董政辰
@@ -48,8 +51,21 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         } else {
             res = JwtUtil.verifyToken(token);
         }
+        PrintWriter writer = null;
+
+        //反馈给前端 提示token过期
         if (!res) {
-            response.sendError(ErrorCode.TOKEN_EXPIRED, "用户登陆信息已过期");
+            try {
+                Object obj = JSONObject.toJSON(Result.fail(ErrorCode.TOKEN_EXPIRED, "用户登陆已经过期"));
+                response.setCharacterEncoding("UTF-8");
+                response.setContentType("application/json;charset=utf-8");
+                writer = response.getWriter();
+                writer.print(obj);
+            } catch (Exception e) {
+                System.out.println("token检查出现了异常");
+            } finally {
+                writer.close();
+            }
         }
         return res;
     }

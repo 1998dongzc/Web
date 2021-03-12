@@ -83,7 +83,7 @@ public class ApplyServiceImpl implements ApplyService {
     @Transactional
     public Result disagree(Device device, Integer num, Integer uid, Integer applyId) {
 
-        String mess = "设备名称:" + device.getDeviceName() + "===教室:" + getLocalNameByRoomId(device.getDeviceRoomId()) + "===数量:" + num;
+        String mess = "设备名称:" + device.getDeviceName() + "————教室:" + getLocalNameByRoomId(device.getDeviceRoomId()) + "————数量:" + num;
 
         ApplyLog al = new ApplyLog();
         al.setUid(uid);
@@ -97,7 +97,8 @@ public class ApplyServiceImpl implements ApplyService {
         int res1 = applyMapper.deleteByPrimaryKey(applyId);
         if (res1 != 1)
             return Result.fail("应答失败！(删除应答)");
-        return null;
+
+        return Result.success("应答成功");
     }
 
     @Override
@@ -111,16 +112,16 @@ public class ApplyServiceImpl implements ApplyService {
     public Result delAllLogs(Integer uid) {
         try {
             applyLogMapper.deleteByUid(uid);
-        }catch (Exception e){
+        } catch (Exception e) {
             return Result.fail("删除记录失败");
         }
-        return  Result.success("删除记录成功");
+        return Result.success("删除记录成功");
     }
 
 
     public String getLocalNameByRoomId(int roomId) {
         Room room = roomMapper.selectByPrimaryKey(roomId);
-        Building building = buildingMapper.selectByPrimaryKey(room.getId());
+        Building building = buildingMapper.selectByPrimaryKey(room.getBuidlingId());
         return building.getBuildingName() + " " + room.getRoomName();
     }
 }

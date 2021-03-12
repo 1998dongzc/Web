@@ -1,5 +1,6 @@
 package com.dzc.admin.controller;
 
+import com.dzc.admin.annotation.ValidToken;
 import com.dzc.admin.common.Result;
 import com.dzc.admin.model.Device;
 import com.dzc.admin.service.DeviceService;
@@ -21,7 +22,7 @@ public class DeviceController {
     @Autowired
     private DeviceService deviceService;
 
-
+    @ValidToken
     @PostMapping("/add/{num}")
     public Result addDevice(@RequestBody Device device, @PathVariable("num") int num){
         System.out.println(device);
@@ -33,6 +34,7 @@ public class DeviceController {
         return deviceService.getAllDevices();
     }
 
+    @ValidToken
     @PostMapping("/del/{id}")
     public Result delDevice(@PathVariable("id") List<Integer> id){
         return deviceService.delDevice(id);

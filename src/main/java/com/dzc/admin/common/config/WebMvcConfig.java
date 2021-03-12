@@ -1,4 +1,4 @@
-package com.dzc.admin.common;
+package com.dzc.admin.common.config;
 
 import com.dzc.admin.common.interceptor.TokenInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;

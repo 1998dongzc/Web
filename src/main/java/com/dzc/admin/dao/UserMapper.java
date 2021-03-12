@@ -1,6 +1,10 @@
 package com.dzc.admin.dao;
 
 import com.dzc.admin.model.User;
+import com.dzc.admin.vo.UserInfoVo;
+import com.dzc.admin.vo.UserVo;
+
+import java.util.List;
 
 public interface UserMapper {
     int deleteByPrimaryKey(Integer id);
@@ -16,4 +20,10 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     User selectOneUser(User user);
+
+    List<UserInfoVo> getAllUser();
+
+    User selectUserByUserName(User user);
+
+    Integer getIncrementId();
 }
