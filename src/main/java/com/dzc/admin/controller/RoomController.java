@@ -31,24 +31,28 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
-    @GetMapping("/getRoom")
+    @ValidToken
+    @GetMapping("/getRooms")
     public Result getRoom(){
         List<Room> rooms = roomMapper.selectRooms();
         return Result.success(rooms);
     }
 
+    @ValidToken
     @GetMapping("/getRoomByBid/{bid}")
     public Result getRoomByBid(@PathVariable int bid){
         List<Room> rooms = roomMapper.selectRoomsByBuildingId(bid);
         return Result.success(rooms);
     }
 
+    @ValidToken
     @GetMapping("/getBuilding")
     public Result getBuilding(){
         List<Building> buildings = buildingMapper.selectBuidings();
         return Result.success(buildings);
     }
 
+    @ValidToken
     @GetMapping("/getBuilding/{id}")
     public Result getBuildingById(@PathVariable("id") int id){
         Building building = buildingMapper.selectByPrimaryKey(id);

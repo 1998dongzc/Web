@@ -14,6 +14,7 @@ import com.dzc.admin.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -138,22 +139,21 @@ public class UserServiceImpl implements UserService {
             return Result.fail("该账号已存在");
         }
 
-        addUser.setPassword(userInfoVo.getPasword());
+        addUser.setPassword(userInfoVo.getPassword());
         addUser.setId(incrementId);
 
         UserInfo addInfo = new UserInfo();
         addInfo.setId(incrementId);
-        addInfo.setAvatar(Info.DEFAULTAVATAR);
-        addInfo.setRole(Info.DEFAULTROLE);
+        addInfo.setAvatar(Info.DEFAULT_AVATAR);
+        addInfo.setRole(Info.DEFAULT_ROLE);
         addInfo.setName(userInfoVo.getName());
         addInfo.setIntroduction("");
         int addUserRes = userMapper.insertSelective(addUser);
         int addInfoRes = userInfoMapper.insertSelective(addInfo);
 
-        if (addUserRes==1&&addInfoRes==1){
+        if (addUserRes == 1 && addInfoRes == 1) {
             return Result.success("注册成功");
-        }
-        else{
+        } else {
             return Result.fail("注册失败,请重新尝试");
         }
     }
@@ -161,7 +161,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Result delUser(User user) {
-        int res = userMapper.deleteByPrimaryKey(user.getId());
+        User delUser = userMapper.selectByPrimaryKey(user.getId());
+        // 删除的用户为空或者用户admin不能删除
+        if (delUser == null || Info.ADMIN_ROLE.equals(delUser.getUsername()))
+            return Result.fail("删除用户失败");
+        int res = userMapper.deleteByPrimaryKey(user.getId()); 
+
         if (res != 1)
             return Result.fail("删除用户失败");
         else

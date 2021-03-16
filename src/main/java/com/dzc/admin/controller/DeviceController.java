@@ -29,6 +29,7 @@ public class DeviceController {
         return deviceService.addDeivce(device,num);
     }
 
+    @ValidToken
     @GetMapping("/get")
     public Result getDevice(){
         return deviceService.getAllDevices();
@@ -40,5 +41,9 @@ public class DeviceController {
         return deviceService.delDevice(id);
     }
 
-
+    @ValidToken
+    @PostMapping("/setDeviceIp")
+    public Result setDeviceIp(@RequestBody Device device){
+        return deviceService.setDeviceIp(device);
+    }
 }

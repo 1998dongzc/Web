@@ -26,13 +26,19 @@ public class UserController {
 
     /**
      * 用户登录APi
-     *
-     * @param user
-     * @return token 用户token
      */
     @PostMapping("/login")
     public Result userLogin(@RequestBody User user) {
         return userService.logIn(user);
+    }
+
+    /**
+     * 用户注册
+     */
+    @PostMapping("/signUp")
+    public Result signUp(@RequestBody UserInfoVo userInfoVo){
+        System.out.println(userInfoVo);
+        return userService.signUpOneUser(userInfoVo);
     }
 
     /**
@@ -58,6 +64,7 @@ public class UserController {
         return userService.updateUser(user);
     }
 
+    @ValidToken
     @GetMapping("/getInfo/{id}")
     public Result getUserName(@PathVariable("id") Integer id){
         return userService.getUserInfoById(id);
@@ -79,11 +86,6 @@ public class UserController {
     @PostMapping("/changeRole")
     public Result changUserRole(@RequestBody UserInfo userInfo){
         return userService.changeRole(userInfo);
-    }
-
-    @PostMapping("/signUp")
-    public Result signUp(@RequestBody UserInfoVo userInfoVo){
-        return userService.signUpOneUser(userInfoVo);
     }
 
     @ValidToken

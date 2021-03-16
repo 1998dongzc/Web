@@ -76,7 +76,7 @@
         t_room
     </select>
 
-    <select id="selectRoomsByBuildingId" resultMap="BaseResultMap">
+    <select id="selectRoomsByBuildingselectRoomsd" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from

@@ -20,4 +20,5 @@ public interface DeviceService {
 
     Result delDevice(List<Integer> id);
 
+    Result setDeviceIp(Device device);
 }

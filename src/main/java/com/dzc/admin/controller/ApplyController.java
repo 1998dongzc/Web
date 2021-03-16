@@ -32,11 +32,13 @@ public class ApplyController {
         return applyService.addApply(apply);
     }
 
+    @ValidToken
     @GetMapping("/get")
     public Result getApplys(){
         return applyService.getAllApplys();
     }
-    
+
+    @ValidToken
     @GetMapping("/log/{uid}")
     public Result applyLog(@PathVariable("uid") Integer uid){
         return applyService.getApplyLog(uid);

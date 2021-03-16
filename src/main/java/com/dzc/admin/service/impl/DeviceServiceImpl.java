@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author: 董政辰
@@ -48,6 +50,22 @@ public class DeviceServiceImpl implements DeviceService {
                 return Result.fail("删除设备失败");
         }
         return Result.success("删除成功");
+    }
+
+    @Override
+    public Result setDeviceIp(Device device) {
+        List<String> allIp = deviceMapper.getAllIp();
+        int index = allIp.indexOf(device.getIp());
+        if (index != -1){
+            return Result.fail("该IP已存在");
+        }
+
+        int res= deviceMapper.updateByPrimaryKeySelective(device);
+        if (res!=1){
+            return Result.fail("修改设备IP失败");
+        }else {
+            return Result.success("修改设备IP成功");
+        }
     }
 
 }

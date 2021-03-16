@@ -22,9 +22,9 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
     <insert id="insert" parameterType="com.dzc.admin.model.Device">
-    insert into t_device (id, device_name, device_room_id, 
+    insert into t_device (id, device_name, device_room_id, ip,
       status)
-    values (#{id,jdbcType=INTEGER}, #{deviceName,jdbcType=VARCHAR}, #{deviceRoomId,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{deviceName,jdbcType=VARCHAR}, #{deviceRoomId,jdbcType=INTEGER}, #{ip,jdbcType=VARCHAR},
       #{status,jdbcType=INTEGER})
   </insert>
     <insert id="insertSelective" parameterType="com.dzc.admin.model.Device">
@@ -42,6 +42,9 @@
             <if test="status != null">
                 status,
             </if>
+            <if test="ip != null">
+                status,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -55,6 +58,9 @@
             </if>
             <if test="status != null">
                 #{status,jdbcType=INTEGER},
+            </if>
+            <if test="ip != null">
+                #{ip,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -70,6 +76,9 @@
             <if test="status != null">
                 status = #{status,jdbcType=INTEGER},
             </if>
+            <if test="ip != null">
+                ip = #{ip,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -77,7 +86,8 @@
     update t_device
     set device_name = #{deviceName,jdbcType=VARCHAR},
       device_room_id = #{deviceRoomId,jdbcType=INTEGER},
-      status = #{status,jdbcType=INTEGER}
+      status = #{status,jdbcType=INTEGER},
+      ip = #{ip,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -93,4 +103,8 @@ FROM
 	( SELECT d.id , d.ip as ip, device_name, room_name,STATUS, buidling_id FROM `t_device` d JOIN t_room r ON d.device_room_id = r.id ) AS r
 	JOIN t_building b ON r.buidling_id = b.id
   </select>
+    <select id="getAllIp" resultType="java.lang.String">
+        select distinct ip
+        from t_device
+    </select>
 </mapper>

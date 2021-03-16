@@ -24,7 +24,7 @@ public class UserInfoVo {
     /**
      * 密码
      */
-    private String pasword;
+    private String password;
     /**
      * 姓名
      */
