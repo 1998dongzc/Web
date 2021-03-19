@@ -12,12 +12,14 @@ import com.dzc.admin.service.UserService;
 import com.dzc.admin.vo.UserInfoVo;
 import com.dzc.admin.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: 董政辰
@@ -35,14 +37,36 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserInfoMapper userInfoMapper;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
 //    @Autowired UserInfoMapper userInfoMapper;
 
     @Override
     public Result logIn(User user) {
+        //设置用户可以尝试登陆的次数
+        final String totaltimes="10";
+
+        String username = user.getUsername();
+        String loginTimes = (String) redisTemplate.opsForValue().get(username);
+        System.out.println(loginTimes);
+        if (loginTimes == null) {
+            redisTemplate.opsForValue().set(username, totaltimes);
+            loginTimes = totaltimes;
+        }
+        if ("0".equals(loginTimes)) {
+            Long expire = redisTemplate.opsForValue().getOperations().getExpire(username);
+            return Result.fail("请在" + expire + "秒后再重试");
+        }
+
         User res = userMapper.selectOneUser(user);
+
         if (res == null) {
-            return Result.fail(ErrorCode.TOKEN_ERROR, "账号或密码错误");
+            loginTimes = Integer.parseInt(loginTimes) - 1 + "";
+            redisTemplate.opsForValue().set(username, loginTimes, 5, TimeUnit.MINUTES);
+            return Result.fail(ErrorCode.TOKEN_ERROR, "账号或密码错误,还剩" + loginTimes + "次机会");
         } else {
+            redisTemplate.opsForValue().set(username, totaltimes);
             String token = JwtUtil.createToken(res);
             return Result.success(new UserVo(token));
         }
@@ -58,14 +82,6 @@ public class UserServiceImpl implements UserService {
         return Result.success(userInfo);
     }
 
-    @Override
-    public Result logOut() {
-        try {
-            return Result.success("登出成功");
-        } catch (Exception exception) {
-            return Result.fail("登出失败");
-        }
-    }
 
     @Override
     public Result getUserInfoById(Integer id) {
@@ -165,7 +181,7 @@ public class UserServiceImpl implements UserService {
         // 删除的用户为空或者用户admin不能删除
         if (delUser == null || Info.ADMIN_ROLE.equals(delUser.getUsername()))
             return Result.fail("删除用户失败");
-        int res = userMapper.deleteByPrimaryKey(user.getId()); 
+        int res = userMapper.deleteByPrimaryKey(user.getId());
 
         if (res != 1)
             return Result.fail("删除用户失败");

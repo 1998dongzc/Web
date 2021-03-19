@@ -42,7 +42,10 @@ public class LockServiceImpl implements LockService {
             message = "解锁";
             status = 1;
         }
-        String ip = "192.168.3.3";
+        String ip = device.getIp();
+
+        device.setStatus(status);
+
         Socket socket = null;
         PrintWriter out = null;
         try {
@@ -54,15 +57,22 @@ public class LockServiceImpl implements LockService {
             e.printStackTrace();
             return Result.fail(message + "失败");
         } finally {
-            out.close();
-            socket.close();
+            if (out != null && socket != null) {
+                out.close();
+                socket.close();
+            }else
+                return Result.fail("网络连接失败");
             String opsInRedis = (String) redisTemplate.opsForValue().get(ip);
             if (ops.equals(opsInRedis)) {
                 // 数据库中设备状态更新
-
-                return Result.success(message + "成功");
+                int res = deviceMapper.updateByPrimaryKeySelective(device);
+                if (res != 1) {
+                    return Result.fail(message + "失败");
+                } else {
+                    return Result.success(message + "成功");
+                }
             } else
-                return Result.fail(message+"失败");
+                return Result.fail(message + "失败");
         }
     }
 

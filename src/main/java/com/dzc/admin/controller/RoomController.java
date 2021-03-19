@@ -1,5 +1,6 @@
 package com.dzc.admin.controller;
 
+import com.dzc.admin.annotation.ValidAdminToken;
 import com.dzc.admin.annotation.ValidToken;
 import com.dzc.admin.common.Result;
 import com.dzc.admin.dao.BuildingMapper;
@@ -59,25 +60,25 @@ public class RoomController {
         return Result.success(building);
     }
 
-    @ValidToken
+    @ValidAdminToken
     @PostMapping("/addBuild")
     public Result addBuild(@RequestBody Building building){
         return roomService.addBuild(building);
     }
 
-    @ValidToken
+    @ValidAdminToken
     @PostMapping("/delBuild")
     public Result delBuild(@RequestBody Building building){
         return roomService.delBuild(building);
     }
 
-    @ValidToken
+    @ValidAdminToken
     @PostMapping("/addRoom")
     public Result addRoom(@RequestBody Room room){
         return roomService.addRoom(room);
     }
 
-    @ValidToken
+    @ValidAdminToken
     @PostMapping("/delRoom")
     public Result delRoom(@RequestBody Room room){
         return roomService.delRoom(room);

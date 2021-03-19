@@ -9,8 +9,11 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.dzc.admin.common.ErrorCode;
 import com.dzc.admin.common.Result;
+import com.dzc.admin.dao.ApplyMapper;
+import com.dzc.admin.dao.UserInfoMapper;
 import com.dzc.admin.model.User;
 import jdk.nashorn.internal.ir.ReturnNode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.In;
 import sun.misc.Cleaner;
 
@@ -34,6 +37,8 @@ public class JwtUtil {
     //过期时间 单位：秒
     private static final int EXPIRE_TIME = 10*60;
 
+    @Autowired
+    private UserInfoMapper userInfoMapper;
 
     /**
      * 生成token
@@ -86,5 +91,6 @@ public class JwtUtil {
             return 0;
         }
     }
+
 
 }

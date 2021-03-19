@@ -1,5 +1,6 @@
 package com.dzc.admin.controller;
 
+import com.dzc.admin.annotation.ValidAdminToken;
 import com.dzc.admin.annotation.ValidToken;
 import com.dzc.admin.common.Result;
 import com.dzc.admin.common.jwt.JwtUtil;
@@ -28,7 +29,7 @@ public class ApplyController {
 
     @ValidToken
     @PostMapping("/add")
-    public Result apply(@RequestBody Apply apply){
+    public Result applyDevice(@RequestBody Apply apply){
         return applyService.addApply(apply);
     }
 
@@ -40,23 +41,23 @@ public class ApplyController {
 
     @ValidToken
     @GetMapping("/log/{uid}")
-    public Result applyLog(@PathVariable("uid") Integer uid){
+    public Result getApplyLog(@PathVariable("uid") Integer uid){
         return applyService.getApplyLog(uid);
     }
 
     @ValidToken
     @PostMapping("/delLogs")
-    public Result delAllLogs(@RequestBody UserInfo user){
+    public Result delAllApplyLogs(@RequestBody UserInfo user){
         return applyService.delAllLogs(user.getId());
     }
 
-    @ValidToken
+    @ValidAdminToken
     @PostMapping("/agree/{num}/{uid}/{aid}")
     public Result agreeApply(@RequestBody Device device, @PathVariable("num") Integer num,@PathVariable("uid") Integer uid,@PathVariable("aid") Integer applyId){
         return applyService.agree(device,num,uid,applyId);
     }
 
-    @ValidToken
+    @ValidAdminToken
     @PostMapping("/disagree/{num}/{uid}/{aid}")
     public Result rejectApply(@RequestBody Device device, @PathVariable("num") Integer num,@PathVariable("uid") Integer uid,@PathVariable("aid") Integer applyId){
         return applyService.disagree(device,num,uid,applyId);

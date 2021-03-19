@@ -1,5 +1,6 @@
 package com.dzc.admin.controller;
 
+import com.dzc.admin.annotation.ValidAdminToken;
 import com.dzc.admin.annotation.ValidToken;
 import com.dzc.admin.common.Result;
 import com.dzc.admin.model.User;
@@ -28,7 +29,7 @@ public class UserController {
      * 用户登录APi
      */
     @PostMapping("/login")
-    public Result userLogin(@RequestBody User user) {
+    public Result login(@RequestBody User user) {
         return userService.logIn(user);
     }
 
@@ -48,7 +49,7 @@ public class UserController {
      */
     @GetMapping("/info")
     @ValidToken
-    public Result userInfo(HttpServletRequest request) {
+    public Result getUserInfo(HttpServletRequest request) {
         return userService.getUserInfo(request);
     }
 
@@ -72,23 +73,23 @@ public class UserController {
 
     @ValidToken
     @PostMapping("/updateInfo")
-    public Result updateInfo(@RequestBody UserInfo userInfo){
+    public Result updateUserInfo(@RequestBody UserInfo userInfo){
         return userService.updateUserInfo(userInfo);
     }
 
-    @ValidToken
+    @ValidAdminToken
     @GetMapping("/getAllUser")
     public Result getAllUser(){
         return userService.getAllUserInfo();
     }
 
-    @ValidToken
+    @ValidAdminToken
     @PostMapping("/changeRole")
-    public Result changUserRole(@RequestBody UserInfo userInfo){
+    public Result changeUserRole(@RequestBody UserInfo userInfo){
         return userService.changeRole(userInfo);
     }
 
-    @ValidToken
+    @ValidAdminToken
     @PostMapping("/delUser")
     public Result delUser(@RequestBody User user){
         return userService.delUser(user);

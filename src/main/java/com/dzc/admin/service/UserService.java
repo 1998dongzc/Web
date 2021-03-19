@@ -20,8 +20,6 @@ public interface UserService {
 
     public Result getUserInfo(HttpServletRequest request);
 
-    public Result logOut();
-
     Result getUserInfoById(Integer id);
 
     Result getUser(User user);

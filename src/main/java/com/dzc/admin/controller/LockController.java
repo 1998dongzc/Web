@@ -1,6 +1,8 @@
 package com.dzc.admin.controller;
 
+import com.dzc.admin.annotation.ValidToken;
 import com.dzc.admin.common.Result;
+import com.dzc.admin.common.constant.Info;
 import com.dzc.admin.model.Device;
 import com.dzc.admin.service.LockService;
 import lombok.AllArgsConstructor;
@@ -21,19 +23,22 @@ import java.net.Socket;
  * @email：532587041@qq.com
  */
 @RestController
+@RequestMapping("/ops")
 public class LockController {
 
     @Autowired
     private LockService lockService;
 
+    @ValidToken
     @RequestMapping("/lock")
-    public Result lock() throws IOException {
-       return lockService.opsForlock(new Device(),"lock");
+    public Result lockDevice(@RequestBody Device device) throws IOException {
+        return lockService.opsForlock(device, Info.LOCK_TEXT);
     }
 
+    @ValidToken
     @RequestMapping("/unlock")
-    public Result unlock() throws IOException {
-        return lockService.opsForlock(new Device(),"unlock");
+    public Result unlockDevice(@RequestBody Device device) throws IOException {
+        return lockService.opsForlock(device, Info.UNLOCK_TEXT);
     }
 
 }
