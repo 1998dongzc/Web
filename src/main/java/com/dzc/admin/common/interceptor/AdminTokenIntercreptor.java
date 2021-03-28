@@ -9,6 +9,7 @@ import com.dzc.admin.common.jwt.JwtUtil;
 import com.dzc.admin.dao.UserInfoMapper;
 import com.dzc.admin.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -24,13 +25,14 @@ import java.io.PrintWriter;
  * @description:
  * @email：532587041@qq.com
  */
+@Component
 public class AdminTokenIntercreptor extends HandlerInterceptorAdapter {
 
     @Autowired
     private UserInfoMapper userInfoMapper;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         boolean res;
 
         //此部分用于获取方法上是否有ValidAdminToken或者validate属性值是否为true
@@ -64,10 +66,12 @@ public class AdminTokenIntercreptor extends HandlerInterceptorAdapter {
             if (validToken) {
                 int uid = JwtUtil.getTokenInfo(token);
                 UserInfo userInfo = userInfoMapper.selectByPrimaryKey(uid);
-                JSONObject.toJSON(Result.fail(ErrorCode.TOKEN_EXPIRED, "用户没有该权限"));
-                res = Info.ADMIN_ROLE.equals(userInfo.getRole());
+                // 判断权限是否为admin或root
+                res = Info.ADMIN_ROLE.equals(userInfo.getRole())||Info.ROOT_ROLE.equals(userInfo.getRole());
+                if (!res)
+                    obj = JSONObject.toJSON(Result.fail(ErrorCode.TOKEN_ERROR, "用户没有该权限"));
             } else {
-                JSONObject.toJSON(Result.fail(ErrorCode.TOKEN_EXPIRED, "用户登陆已经过期"));
+                obj = JSONObject.toJSON(Result.fail(ErrorCode.TOKEN_EXPIRED, "用户登陆已经过期"));
                 res = false;
             }
 

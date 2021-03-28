@@ -1,5 +1,6 @@
 package com.dzc.admin.common.config;
 
+import com.dzc.admin.common.interceptor.AdminTokenIntercreptor;
 import com.dzc.admin.common.interceptor.TokenInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +20,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     TokenInterceptor tokenInterceptor;
 
+    @Autowired
+    AdminTokenIntercreptor adminTokenIntercreptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(adminTokenIntercreptor).addPathPatterns("/**");
     }
 }

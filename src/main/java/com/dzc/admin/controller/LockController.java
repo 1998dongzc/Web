@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.*;
@@ -31,14 +32,16 @@ public class LockController {
 
     @ValidToken
     @RequestMapping("/lock")
-    public Result lockDevice(@RequestBody Device device) throws IOException {
-        return lockService.opsForlock(device, Info.LOCK_TEXT);
+    public Result lockDevice(@RequestBody Device device, HttpServletRequest request) throws IOException {
+        String token = request.getHeader("user-token");
+        return lockService.opsForlock(device, Info.LOCK_TEXT, token);
     }
 
     @ValidToken
     @RequestMapping("/unlock")
-    public Result unlockDevice(@RequestBody Device device) throws IOException {
-        return lockService.opsForlock(device, Info.UNLOCK_TEXT);
+    public Result unlockDevice(@RequestBody Device device, HttpServletRequest request) throws IOException {
+        String token = request.getHeader("user-token");
+        return lockService.opsForlock(device, Info.UNLOCK_TEXT,token);
     }
 
 }

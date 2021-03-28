@@ -13,6 +13,6 @@ import java.io.IOException;
  */
 public interface LockService {
 
-    public Result opsForlock(Device device,String ops) throws IOException;
+    public Result opsForlock(Device device,String ops,String token) throws IOException;
 
 }

@@ -11,6 +11,8 @@ public class UserInfo {
 
     private String introduction;
 
+    private String department;
+
     public Integer getId() {
         return id;
     }
@@ -51,6 +53,14 @@ public class UserInfo {
         this.introduction = introduction == null ? null : introduction.trim();
     }
 
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
     @Override
     public String toString() {
         return "UserInfo{" +
@@ -59,6 +69,7 @@ public class UserInfo {
                 ", name='" + name + '\'' +
                 ", avatar='" + avatar + '\'' +
                 ", introduction='" + introduction + '\'' +
+                ", department='" + department + '\'' +
                 '}';
     }
 }

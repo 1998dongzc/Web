@@ -13,6 +13,7 @@ public class Info {
     public final static String DEFAULT_ROLE = "";
 
     public final static String ADMIN_ROLE = "admin";
+    public final static String ROOT_ROLE = "root";
 
     public final static String LOCK_TEXT="lock";
 

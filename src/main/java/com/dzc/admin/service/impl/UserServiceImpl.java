@@ -13,11 +13,13 @@ import com.dzc.admin.vo.UserInfoVo;
 import com.dzc.admin.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Struct;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -38,32 +40,33 @@ public class UserServiceImpl implements UserService {
     private UserInfoMapper userInfoMapper;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
 //    @Autowired UserInfoMapper userInfoMapper;
 
     @Override
     public Result logIn(User user) {
         //设置用户可以尝试登陆的次数
-        final String totaltimes="10";
+        final String totaltimes = "10";
+        final int againTime = 10;
 
         String username = user.getUsername();
-        String loginTimes = (String) redisTemplate.opsForValue().get(username);
-        System.out.println(loginTimes);
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        String loginTimes = (String) valueOperations.get(username);
         if (loginTimes == null) {
             redisTemplate.opsForValue().set(username, totaltimes);
             loginTimes = totaltimes;
         }
         if ("0".equals(loginTimes)) {
             Long expire = redisTemplate.opsForValue().getOperations().getExpire(username);
-            return Result.fail("请在" + expire + "秒后再重试");
+            return Result.fail("请在" + expire + "秒后再重试，若忘记密码请联系管理员");
         }
 
         User res = userMapper.selectOneUser(user);
 
         if (res == null) {
             loginTimes = Integer.parseInt(loginTimes) - 1 + "";
-            redisTemplate.opsForValue().set(username, loginTimes, 5, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(username, loginTimes, againTime, TimeUnit.MINUTES);
             return Result.fail(ErrorCode.TOKEN_ERROR, "账号或密码错误,还剩" + loginTimes + "次机会");
         } else {
             redisTemplate.opsForValue().set(username, totaltimes);

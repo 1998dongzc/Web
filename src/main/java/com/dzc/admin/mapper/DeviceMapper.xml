@@ -95,8 +95,8 @@
 SELECT
 	r.id as id,
 	r.device_name as DeviceName,
-	r.room_name as BuildingName,
-	b.building_name as roomName,
+	r.room_name as roomName,
+	b.building_name as BuildingName,
 	r.STATUS as status,
 	r.ip as ip
 FROM

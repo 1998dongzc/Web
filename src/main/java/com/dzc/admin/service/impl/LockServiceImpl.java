@@ -4,8 +4,10 @@ import com.dzc.admin.common.Result;
 import com.dzc.admin.dao.DeviceMapper;
 import com.dzc.admin.model.Device;
 import com.dzc.admin.service.LockService;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,14 +27,14 @@ import java.net.Socket;
 public class LockServiceImpl implements LockService {
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     @Autowired
     private DeviceMapper deviceMapper;
 
     @Override
     @Transactional
-    public Result opsForlock(Device device, String ops) throws IOException {
+    public Result opsForlock(Device device, String ops, String token) throws IOException {
         String message = "";
         int status;
         if ("lock".equals(ops)) {
@@ -52,7 +54,7 @@ public class LockServiceImpl implements LockService {
             socket = new Socket(ip, 9998);
             out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out.write(ops + "|" + ip);
+            out.write(ops + "|" + ip + "|" + token);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(message + "失败");
@@ -60,9 +62,12 @@ public class LockServiceImpl implements LockService {
             if (out != null && socket != null) {
                 out.close();
                 socket.close();
-            }else
+            } else
                 return Result.fail("网络连接失败");
-            String opsInRedis = (String) redisTemplate.opsForValue().get(ip);
+            ValueOperations valueOperations = redisTemplate.opsForValue();
+            String opsInRedis = (String) valueOperations.get(ip);
+            if ("Token is not valid".equals(opsInRedis))
+                return Result.fail("token不合法 无法操作");
             if (ops.equals(opsInRedis)) {
                 // 数据库中设备状态更新
                 int res = deviceMapper.updateByPrimaryKeySelective(device);
@@ -72,7 +77,7 @@ public class LockServiceImpl implements LockService {
                     return Result.success(message + "成功");
                 }
             } else
-                return Result.fail(message + "失败");
+                return Result.success("该设备已经" + message);
         }
     }
 

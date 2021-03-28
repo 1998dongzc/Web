@@ -70,8 +70,8 @@
   </update>
 
     <select id="selectRooms" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
+        select distinct
+        room_name
         from
         t_room
     </select>
