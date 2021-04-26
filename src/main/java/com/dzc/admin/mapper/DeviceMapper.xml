@@ -89,22 +89,40 @@
       status = #{status,jdbcType=INTEGER},
       ip = #{ip,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
-  </update>
-
+    </update>
     <select id="selectAllDevices" resultType="com.dzc.admin.vo.DeviceVo">
-SELECT
+    SELECT
 	r.id as id,
 	r.device_name as DeviceName,
 	r.room_name as roomName,
 	b.building_name as BuildingName,
 	r.STATUS as status,
 	r.ip as ip
-FROM
+    FROM
 	( SELECT d.id , d.ip as ip, device_name, room_name,STATUS, buidling_id FROM `t_device` d JOIN t_room r ON d.device_room_id = r.id ) AS r
 	JOIN t_building b ON r.buidling_id = b.id
-  </select>
+    </select>
+
     <select id="getAllIp" resultType="java.lang.String">
         select distinct ip
         from t_device
     </select>
+
+    <delete id="deleteByListId">
+        delete from t_device
+        where id in
+        <foreach collection="list" open="(" close=")"
+                 separator="," item="deviceId">
+            #{deviceId}
+        </foreach>
+    </delete>
+
+    <insert id="insertDevices">
+        insert into t_device
+        (device_name, device_room_id, status)
+        values
+        <foreach collection="list" item="item" separator=",">
+            ( #{item.deviceName},#{item.deviceRoomId},#{item.status} )
+        </foreach>
+    </insert>
 </mapper>

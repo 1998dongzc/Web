@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 
 /**
@@ -32,9 +33,17 @@ public class LockServiceImpl implements LockService {
     @Autowired
     private DeviceMapper deviceMapper;
 
+    private final int timeOut = 3000;  //超时应该在3钞以上
+
     @Override
     @Transactional
     public Result opsForlock(Device device, String ops, String token) throws IOException {
+
+        // 先判断 网络IP是否可以Ping通
+        boolean ping = InetAddress.getByName(device.getIp()).isReachable(timeOut);
+        if (!ping)
+            return Result.fail("无法通过网络连接设备");
+
         String message = "";
         int status;
         if ("lock".equals(ops)) {

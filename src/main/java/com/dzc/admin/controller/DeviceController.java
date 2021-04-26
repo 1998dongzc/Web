@@ -37,8 +37,8 @@ public class DeviceController {
     }
 
     @ValidAdminToken
-    @PostMapping("/del/{id}")
-    public Result delDevice(@PathVariable("id") List<Integer> id){
+    @PostMapping("/del/{idList}")
+    public Result delDevice(@PathVariable("idList") List<Integer> id){
         return deviceService.delDevice(id);
     }
 

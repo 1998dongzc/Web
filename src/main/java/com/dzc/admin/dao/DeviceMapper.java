@@ -21,4 +21,8 @@ public interface DeviceMapper {
     List<DeviceVo> selectAllDevices();
 
     List<String> getAllIp();
+
+    int deleteByListId(List<Integer> id);
+
+    int insertDevices(List<Device> devices);
 }

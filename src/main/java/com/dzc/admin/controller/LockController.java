@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 
 /**
@@ -29,6 +30,7 @@ public class LockController {
 
     @Autowired
     private LockService lockService;
+
 
     @ValidToken
     @RequestMapping("/lock")

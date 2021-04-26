@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,12 +29,15 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     @Transactional
     public Result addDeivce(Device device, int num) {
+        List<Device> devicesList = new LinkedList<>();
         for (int i = 0; i < num; i++) {
-            int res = deviceMapper.insertSelective(device);
-            if (res < 0)
-                return Result.fail("增加设备失败!");
+            devicesList.add(device);
         }
-        return Result.success("增加设备成功");
+        int res = deviceMapper.insertDevices(devicesList);
+        if (res != num)
+            return Result.fail("增加设备失败");
+        else
+            return Result.success("增加设备成功");
     }
 
     @Override
@@ -44,26 +48,26 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     @Transactional
     public Result delDevice(List<Integer> listId) {
-        for (Integer id : listId) {
-            int i = deviceMapper.deleteByPrimaryKey(id);
-            if (i != 1)
-                return Result.fail("删除设备失败");
-        }
-        return Result.success("删除成功");
+        int res = deviceMapper.deleteByListId(listId);
+        if (res != listId.size())
+            return Result.fail("删除设备失败");
+        else
+            return Result.success("删除设备成功");
     }
 
     @Override
+    @Transactional
     public Result setDeviceIp(Device device) {
         List<String> allIp = deviceMapper.getAllIp();
         int index = allIp.indexOf(device.getIp());
-        if (index != -1){
+        if (index != -1) {
             return Result.fail("该IP已存在");
         }
 
-        int res= deviceMapper.updateByPrimaryKeySelective(device);
-        if (res!=1){
+        int res = deviceMapper.updateByPrimaryKeySelective(device);
+        if (res != 1) {
             return Result.fail("修改设备IP失败");
-        }else {
+        } else {
             return Result.success("修改设备IP成功");
         }
     }
